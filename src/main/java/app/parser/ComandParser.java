@@ -153,7 +153,7 @@ public class ComandParser {
                 return outPutLine;
             }
 
-        case  "/update" -> {
+            case  "/update" -> {
 
                 if (string.length <= 3 || string[2] == null || string[2].isEmpty()
                         ||
@@ -166,46 +166,47 @@ public class ComandParser {
                 outPutLine = BaseMethod.updateTask(console, string[2], string[3]);
 
                 return outPutLine;
-        }
+            }
 
-        case "/delete" -> {
+            case "/delete" -> {
+                if (string.length == 2) {
 
-            if (string.length == 2) {
+                    if (string[1] == null || string[1].isEmpty()) {
 
-                if (string[1] == null || string[1].isEmpty()) {
+                        throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
 
-                    throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                    }
+
+                    return BaseMethod.deleteAllTasks(console, string[1]);
+
+                 } else if (string.length > 2) {
+
+                    if (string.length <= 3 || string[2] == null || string[2].isEmpty()
+                            ||
+                            string[3] == null || string[3].isEmpty()) {
+
+                        throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+
+                    }
+
+                    try {
+
+                        return BaseMethod.deleteTaskFromId(console, string[1], Long.parseLong(string[2]));
+
+                    } catch (NumberFormatException e) {
+
+                        throw new IncorrectDataEntry("Неверная запись id. Используйте только числа [0-9]");
+
+                    }
 
                 }
 
-                BaseMethod.deleteAllTasks(console, string[1]);
-
-            } else if (string.length > 2) {
-
-                if (string.length <= 3 || string[2] == null || string[2].isEmpty()
-                        ||
-                        string[3] == null || string[3].isEmpty()) {
-
-                    throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
-
-                }
-
-                try {
-
-                    BaseMethod.deleteTaskFromId(console, string[1], Long.parseLong(string[2]));
-
-                } catch (NumberFormatException e) {
-
-                    throw new IncorrectDataEntry("Неверная запись id. Используйте только числа [0-9]");
-
-                }
 
             }
 
-
         }
 
-        }
+        return "";
 
     }
 

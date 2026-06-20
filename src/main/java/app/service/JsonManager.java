@@ -1,9 +1,12 @@
 package app.service;
 
+import app.eception.IncorrectDataEntry;
+import app.eception.TaskNotFound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -88,6 +91,21 @@ public class JsonManager {
 
         //удаление строки с задачей определенного id
 
+
+    }
+
+
+    public static boolean checkingAvailability(Long id) throws FileNotFoundException {
+
+        if(id == null) {
+
+            throw new IncorrectDataEntry("Invalid task entry");
+
+        }
+
+        String idStr = String.valueOf(id);
+
+        return SaveJsonFile.searchTaskById(JSON_FILE_PATH.toFile(), idStr.trim());
 
     }
 }

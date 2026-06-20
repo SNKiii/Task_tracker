@@ -8,6 +8,7 @@ import app.format.UpdateFormat;
 import app.service.Console;
 import app.service.JsonManager;
 
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -184,7 +185,7 @@ public class BaseMethod {
 
     }
 
-    public static void deleteAllTasks (Console console, String prefix) {
+    public static String deleteAllTasks (Console console, String prefix) {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
@@ -208,9 +209,7 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-                        String outPutLine = DeleteFormat.taskFormat(console.getAllNameTasks());;
-                        console.consoleDeleteAll();
-                        break;
+                        return console.consoleDeleteAll();
 
                     }
 
@@ -239,10 +238,10 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-                        console.consoleDeleteAll();
+                        String outPutLine = console.consoleDeleteAll();
                         JsonManager.turningEmptyFile();
-                        System.out.println("Все прошло успешно! Хранилище приложение полностью пустое");
-                        break;
+                        System.out.println("Все прошло успешно! Хранилище приложения полностью пустое");
+                        return outPutLine;
 
                     }
 
@@ -254,9 +253,12 @@ public class BaseMethod {
 
         }
 
+        return "Error prefix";
+
     }
 
-    public static void deleteTaskFromId(Console console, String prefix, Long id) {
+
+    public static String deleteTaskFromId(Console console, String prefix, Long id) {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
@@ -282,9 +284,12 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-                        console.consoleDelete(id);
-                        break;
 
+                        try {
+                             return  console.consoleDelete(id);
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                 }
@@ -312,10 +317,9 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-                        console.consoleDeleteAll();
-                        JsonManager.turningEmptyFile();
-                        System.out.println("Все прошло успешно! Хранилище приложение полностью пустое");
-                        break;
+                        String outPutLine = console.consoleDeleteAll();
+                        JsonManager.startWriterTasks(console);
+                        return outPutLine;
 
                     }
 
@@ -326,7 +330,7 @@ public class BaseMethod {
 
 
         }
-
+        return "Error delete task";
     }
 
 

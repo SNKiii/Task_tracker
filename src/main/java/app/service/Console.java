@@ -4,10 +4,12 @@ import app.constants.DataDefaultNumber;
 import app.eception.IncorrectDataEntry;
 import app.eception.TaskNotFound;
 import app.format.BaseFormat;
+import app.format.DeleteFormat;
 import app.model.Task;
 import app.param.Param;
 import app.repository.TaskRepository;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -300,10 +302,16 @@ public class Console {
 
     }
 
-    public String consoleDelete(Long id) {
+    public String consoleDelete(Long id) throws FileNotFoundException {
+
+        var task = taskRepository.getTaskById(id);
         try {
             taskRepository.delete(id);
-            return "The task has been successfully deleted!\\n\"\n" +
+            return DeleteFormat.taskFormatToOne(task)
+                    +
+                    "\n"
+                    +
+                    "The task has been successfully deleted!\n" +
                     "+\n" +
                     "\"Uncompleted tasks remain:" + taskRepository.showSizeTask();
         } catch (TaskNotFound e) {
@@ -313,7 +321,7 @@ public class Console {
 
     public String consoleDeleteAll() {
         taskRepository.deleteAll();
-        return  "All tasks from temporary storage have been deleted!";
+        return  DeleteFormat.taskFormat(getAllNameTasks());
     }
 
     public Integer getSizeTasks() {
