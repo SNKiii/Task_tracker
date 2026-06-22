@@ -33,6 +33,26 @@ public class TaskRepository {
         return tasks;
     }
 
+    public List<Task> getTasks(int quantity) {
+
+        if (tasks.isEmpty()) {
+
+            throw new TaskNotFound();
+
+        }
+
+        List<Task> taskList = new ArrayList<>();
+
+        for (int i = 0; i < quantity; i++) {
+
+            taskList.add(tasks.get(i));
+
+        }
+
+        return taskList;
+
+    }
+
     public Task getTaskById(Long id) {
 
         return tasks.stream()

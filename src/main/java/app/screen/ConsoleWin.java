@@ -1,5 +1,6 @@
 package app.screen;
 
+import app.constants.ConstantHandler;
 import app.constants.DataPathTextFile;
 import app.parser.ComandParser;
 import app.service.Console;
@@ -21,67 +22,55 @@ public class ConsoleWin {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
-        int count = 0;
-        while(count == 0) {
+        ImageToAscii.printFromFile(DataPathTextFile.PATH_FOR_IMAGE, 185);
 
-            ImageToAscii.printFromFile(DataPathTextFile.PATH_FOR_IMAGE, 185);
+        System.out.println(ConstantHandler.getStartMenu());
 
-            Path path = DataPathTextFile.START_MENU;
+        String input = scanner.nextLine().trim();
 
-            try{
-                Files.lines(path, StandardCharsets.UTF_8).forEach(System.out::println);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        switch (input) {
 
-            String input = scanner.nextLine().trim();
+            case "/start" -> {
 
-            switch (input) {
+                String inputCommand = "";
 
-                case "/start" -> {
+                System.out.println(ConstantHandler.getBaseCommand());
 
-                    JsonManager.startWriterTasks(console);
+                JsonManager.startWriterTasks(console);
 
-                    try{
-                        Files.lines(DataPathTextFile.BASE_COMAND, StandardCharsets.UTF_8).forEach(System.out::println);
-                    } catch (IOException e) {
-                        System.out.println("Что-то пошло не так: \n" + e.getMessage());
-                    }
+                do {
 
-                    String inputCommand = scanner.nextLine().trim();
+                    inputCommand = scanner.nextLine().trim();
+
                     if (inputCommand.isEmpty()) {
 
-                        System.out.println("Ошибка. Пустой текст ");
+                        System.out.println("Ошибка. Пустой ввод команды");
 
                     }
+
                     try {
-                        ComandParser.parser(inputCommand, console);
+
+                        String returnCommand = ComandParser.parser(inputCommand, console);
+                        System.out.println(returnCommand);
 
                     } catch (NoSuchMethodException e) {
 
                         System.out.println("Ошибка. " + e.getMessage());
 
                     }
-                    break;
-                }
+                } while(!inputCommand.trim().equals("/exit"));
 
-                case "/exit" -> {
-
-                    JsonManager.endWriterTasks(console);
-                    count+=1;
-                    break;
-
-                }
-
-                default -> {
-
-                    System.out.println("Неправильная команда. Попытайтесь снова");
-
-                }
+                JsonManager.endWriterTasks(console);
+                System.exit(0);
 
             }
+            case "/exit" -> {
+                System.exit(0);
+            }
 
-            break;
+            default -> {
+                System.out.println("Неправильная команда. Попытайтесь снова");
+            }
         }
     }
 }

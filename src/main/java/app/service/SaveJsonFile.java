@@ -4,7 +4,6 @@ package app.service;
 import app.model.Task;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.*;
@@ -16,7 +15,6 @@ public class SaveJsonFile {
 
 
     private static final ObjectMapper mapper = new ObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT)
             .registerModule(new JavaTimeModule());
 
     private SaveJsonFile(){}
@@ -62,15 +60,15 @@ public class SaveJsonFile {
 
     }
 
-    public static void deleteLineById(File file) {
-
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-
-
-
-        }
-
-    }
+//    public static void deleteLineById(File file) {
+//
+//        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//
+//
+//
+//        }
+//
+//    }
 
 
     public static boolean searchTaskById(File file, String id) throws FileNotFoundException {

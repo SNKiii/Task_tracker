@@ -12,7 +12,7 @@ public class DeleteFormat extends BaseFormat{
     public static String taskFormat(List<String> nameTasks) {
 
         StringBuilder stringNameDeleteTask = new StringBuilder();
-
+        stringNameDeleteTask.append("\n");
         for (var nameTask : nameTasks) {
 
             stringNameDeleteTask.append("Deleting a task named -> ");
@@ -23,6 +23,8 @@ public class DeleteFormat extends BaseFormat{
 
         }
 
+        stringNameDeleteTask.append("\n");
+
         return stringNameDeleteTask.toString();
 
 
@@ -32,7 +34,7 @@ public class DeleteFormat extends BaseFormat{
 
         StringBuilder stringNameDeleteTask = new StringBuilder();
 
-        stringNameDeleteTask.append("Deleting a task -> ");
+        stringNameDeleteTask.append("\nDeleting a task -> ");
         stringNameDeleteTask.append(task.getName());
         stringNameDeleteTask.append("\n");
 
@@ -42,6 +44,7 @@ public class DeleteFormat extends BaseFormat{
             stringNameDeleteTask.append("/n");
             stringNameDeleteTask.append("Task id with repository ->");
             stringNameDeleteTask.append(task.getId());
+            stringNameDeleteTask.append("\n");
 
         } else {
 

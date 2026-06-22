@@ -34,6 +34,7 @@ public class Console {
             Task task = new Task();
             task.setName(name);
             task.setBody(body);
+            task.setStage("Create task");
 
             task.setDueDate(LocalDate.parse(dueDate));
 
@@ -49,7 +50,7 @@ public class Console {
 
             taskRepository.create(task);
 
-            return BaseFormat.taskFormat(task);
+            return BaseFormat.formatCreateTask(task);
         } catch (DateTimeParseException e) {
 
             throw new IncorrectDataEntry("The date is in the wrong format" + e.getMessage());
@@ -69,7 +70,7 @@ public class Console {
                 ||
                 dueDate == null
                 ||
-                stage == null || stage.isEmpty()
+                stage.isEmpty()
                 ||
                 createdAt == null
                 ||
@@ -131,22 +132,19 @@ public class Console {
 
             sizeTasks = DataDefaultNumber.DEFAULT_NUMBER_SIZE_TASKS;
 
+        } else if (sizeTasks > taskRepository.showSizeTask()) {
+
+            sizeTasks = taskRepository.showSizeTask();
+
         }
 
-
-        StringBuilder result = new StringBuilder();
-
         try {
-            var tasks = taskRepository.show();
 
-            for (int i = 0; i < sizeTasks && i < tasks.size(); i++) {
+            var tasks = taskRepository.getTasks(sizeTasks);
 
-                result.append(BaseFormat.taskFormat(tasks.get(i)));
-                result.append("\n");
+            return BaseFormat.formatShowTask(tasks);
 
-            }
 
-            return result.toString();
 
         } catch (TaskNotFound e) {
 
@@ -156,16 +154,10 @@ public class Console {
     }
 
     public String consoleShowById(Long id) {
-
-        if (id == null || id <= 0) {
-
-            throw new IncorrectDataEntry("Invalid input");
-
-        }
-
         try {
-
-            return BaseFormat.taskFormat(taskRepository.getTaskById(id));
+            List<Task> tasks = new ArrayList<>();
+            tasks.add(taskRepository.getTaskById(id));
+            return BaseFormat.formatShowTask(tasks);
 
         } catch (TaskNotFound e) {
 
@@ -177,16 +169,11 @@ public class Console {
 
     public  String consoleShowByName(String name) {
 
-        if (name == null || name.isEmpty()) {
-
-            throw new IncorrectDataEntry("Invalid input");
-
-        }
-
-
         try {
 
-            return BaseFormat.taskFormat(taskRepository.getTaskByName(name));
+            List<Task> tasks = new ArrayList<>();
+            tasks.add(taskRepository.getTaskByName(name));
+            return BaseFormat.formatShowTask(tasks);
 
         } catch (TaskNotFound e) {
 
@@ -205,7 +192,7 @@ public class Console {
     }
 
     public String consoleShowImportanceTask(String fixedImportanceLevel) {
-
+        String taskString = "Найденные задачи с уровнем важности " + fixedImportanceLevel + ":\n";
         var tasks = taskRepository.showImportant(Byte.parseByte(fixedImportanceLevel));
 
         if (tasks == null || tasks.isEmpty()) {
@@ -214,7 +201,7 @@ public class Console {
 
         } else {
 
-            return tasks.toString();
+            return taskString + BaseFormat.formatShowTask(tasks);
 
         }
 
@@ -244,7 +231,7 @@ public class Console {
 
         var task = taskRepository.getTaskById(id);
 
-        return task.getName();
+        return  task.getName();
 
     }
 
@@ -320,8 +307,9 @@ public class Console {
     }
 
     public String consoleDeleteAll() {
+        String stringDeleteTasks = DeleteFormat.taskFormat(getAllNameTasks());
         taskRepository.deleteAll();
-        return  DeleteFormat.taskFormat(getAllNameTasks());
+        return  stringDeleteTasks;
     }
 
     public Integer getSizeTasks() {

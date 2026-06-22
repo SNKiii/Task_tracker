@@ -1,7 +1,6 @@
 package app.service;
 
 import app.eception.IncorrectDataEntry;
-import app.eception.TaskNotFound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -39,7 +38,7 @@ public class JsonManager {
 
             if(tasks.isEmpty()) {
 
-                System.out.println("Запуск прошел успешно, но задач пока не найдено");
+                System.out.println("The launch was successful, but no tasks were found yet.");
 
             }
 
@@ -67,7 +66,7 @@ public class JsonManager {
 
         } catch (IOException e) {
 
-            throw new RuntimeException("При записи задач в файл произошла непредвиденная ошибка");
+            throw new RuntimeException("An unexpected error occurred while writing tasks to file.");
 
         }
 
@@ -81,18 +80,18 @@ public class JsonManager {
 
         } catch (IOException e) {
 
-            throw new RuntimeException("При удалении содержимого в файле произошла непредвиденная ошибка");
+            throw new RuntimeException("An unexpected error occurred while deleting the contents of the file.");
 
         }
 
     }
 
-    public  static void deleteLineJson(Console console) {
-
-        //удаление строки с задачей определенного id
-
-
-    }
+//    public  static void deleteLineJson(Console console) {
+//
+//        //удаление строки с задачей определенного id
+//
+//
+//    }
 
 
     public static boolean checkingAvailability(Long id) throws FileNotFoundException {

@@ -76,30 +76,31 @@ public class ComandParser {
 
                 } else if (string.length == 1) {
 
-                    outPutLine = console.consoleShow();
+                    return  console.consoleShow();
 
                 }
 
 
                 switch (string[1]) {
 
-                    case "-a" -> {
-
-                        outPutLine = console.consoleShow(Integer.MAX_VALUE);
-
-                    }
+                    case "-a" -> console.consoleShow(Integer.MAX_VALUE);
 
                     case "-i" -> {
 
-                        if (string.length != 3 || string[2] != null) {
+                        if (string.length != 3 || string[2] == null) {
 
                             throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
 
                         }
 
                         try {
+                            Long id = Long.parseLong(string[2]);
+                            if (id <= 0) {
 
-                            outPutLine = console.consoleShowById(Long.parseLong(string[2]));
+                                throw new IncorrectDataEntry("Id неккоректный ");
+
+                            }
+                            return console.consoleShowById(id);
 
                         } catch (NumberFormatException e) {
 
@@ -122,11 +123,8 @@ public class ComandParser {
 
                     }
 
-                    case "-l" ->  {
+                    case "-l" ->  console.consoleShowImportanceTask();
 
-                        outPutLine = console.consoleShowImportanceTask();
-
-                    }
 
                     case "-li" -> {
 
@@ -142,15 +140,9 @@ public class ComandParser {
 
                     }
 
-                    default ->  {
-
-                        outPutLine = console.consoleShow(Integer.MAX_VALUE);
-
-                    }
+                    default ->  console.consoleShow(Integer.MAX_VALUE);
 
                 }
-
-                return outPutLine;
             }
 
             case  "/update" -> {
@@ -179,7 +171,7 @@ public class ComandParser {
 
                     return BaseMethod.deleteAllTasks(console, string[1]);
 
-                 } else if (string.length > 2) {
+                } else if (string.length > 2) {
 
                     if (string.length <= 3 || string[2] == null || string[2].isEmpty()
                             ||
