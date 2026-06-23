@@ -1,15 +1,16 @@
 package app.parser;
 
+import app.constants.ConstantHandler;
 import app.constants.DataDefaultNumber;
 import app.eception.CommandParsingError;
 import app.eception.IncorrectDataEntry;
 import app.param.StringParam;
 import app.prefix.BaseMethod;
 import app.service.Console;
+import app.service.JsonManager;
 
 import java.lang.reflect.Method;
-import java.lang.runtime.SwitchBootstraps;
-import java.sql.Struct;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,12 +21,12 @@ public class ComandParser {
 
         String outPutLine = "";
 
-        Pattern pattern = Pattern.compile("^/(add|show|update|delete)(?:\\s|$)");
+        Pattern pattern = Pattern.compile("^/(add|show|update|delete|com|exit)");
         Matcher matcher = pattern.matcher(comand.trim());
 
-        if (!matcher.matches()) {
+        if (!matcher.find()) {
 
-            throw new CommandParsingError("Ошибка в команде. Перепроверьте и попытайтесь снова");
+            return "Command error. Please check and try again";
 
         }
 
@@ -89,7 +90,7 @@ public class ComandParser {
 
                         if (string.length != 3 || string[2] == null) {
 
-                            throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                         }
 
@@ -97,14 +98,14 @@ public class ComandParser {
                             Long id = Long.parseLong(string[2]);
                             if (id <= 0) {
 
-                                throw new IncorrectDataEntry("Id неккоректный ");
+                                throw new IncorrectDataEntry("Invalid ID format");
 
                             }
                             return console.consoleShowById(id);
 
                         } catch (NumberFormatException e) {
 
-                            throw new IncorrectDataEntry("Неверная запись id. Используйте только числа [0-9]");
+                            throw new IncorrectDataEntry("Invalid ID format. Use only numbers [0-9]");
 
                         }
 
@@ -112,13 +113,29 @@ public class ComandParser {
 
                     case "-in" -> {
 
-                        if (string.length != 3 && string[2] != null) {
+                        if (string.length < 3 || string[2] == null) {
 
-                            throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                         }
 
-                        outPutLine = console.consoleShowByName(string[2]);
+                        StringBuilder partNameTask = new StringBuilder();
+                        int count = 0;
+                        for (var partName : string) {
+
+                            if (count < 2) {
+
+                                count++;
+                                continue;
+
+                            }
+
+                            partNameTask.append(partName);
+                            partNameTask.append(" ");
+
+                        }
+
+                        outPutLine = console.consoleShowByName(partNameTask.toString().trim());
                         return outPutLine;
 
                     }
@@ -130,7 +147,7 @@ public class ComandParser {
 
                         if (string.length != 3 && string[2] != null) {
 
-                            throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                         }
 
@@ -147,15 +164,15 @@ public class ComandParser {
 
             case  "/update" -> {
 
-                if (string.length <= 3 || string[2] == null || string[2].isEmpty()
+                if (string.length != 3|| string[1] == null || string[1].isEmpty()
                         ||
-                        string[3] == null || string[3].isEmpty()) {
+                        string[2] == null || string[2].isEmpty()) {
 
-                    throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                    throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                 }
 
-                outPutLine = BaseMethod.updateTask(console, string[2], string[3]);
+                outPutLine = BaseMethod.updateTask(console, string[1], string[2]);
 
                 return outPutLine;
             }
@@ -165,7 +182,7 @@ public class ComandParser {
 
                     if (string[1] == null || string[1].isEmpty()) {
 
-                        throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                        throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                     }
 
@@ -177,7 +194,7 @@ public class ComandParser {
                             ||
                             string[3] == null || string[3].isEmpty()) {
 
-                        throw new IncorrectDataEntry("Неверный ввод команды. Недостаточно данных для работы");
+                        throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
 
                     }
 
@@ -187,7 +204,7 @@ public class ComandParser {
 
                     } catch (NumberFormatException e) {
 
-                        throw new IncorrectDataEntry("Неверная запись id. Используйте только числа [0-9]");
+                        throw new IncorrectDataEntry("Invalid ID format. Use only numbers [0-9]");
 
                     }
 
@@ -195,6 +212,8 @@ public class ComandParser {
 
 
             }
+
+            case "/com" -> ConstantHandler.getStartMenu();
 
         }
 

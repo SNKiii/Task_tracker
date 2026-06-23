@@ -1,6 +1,7 @@
 package app.service;
 
 import app.eception.IncorrectDataEntry;
+import app.model.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -55,14 +56,9 @@ public class JsonManager {
         try {
 
             File file = JSON_FILE_PATH.toFile();
-
             var tasks = console.consoleGetAllTasks();
+            SaveJsonFile.appendJson(file, tasks);
 
-            for (var task : tasks) {
-
-                SaveJsonFile.appendJson(file, task);
-
-            }
 
         } catch (IOException e) {
 
@@ -107,4 +103,10 @@ public class JsonManager {
         return SaveJsonFile.searchTaskById(JSON_FILE_PATH.toFile(), idStr.trim());
 
     }
+
+//    public static String updateTask(Console console) {
+//
+//
+//
+//    }
 }

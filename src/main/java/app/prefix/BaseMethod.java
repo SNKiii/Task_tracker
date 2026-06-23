@@ -115,7 +115,7 @@ public class BaseMethod {
 
 
                 System.out.println("Задача " + console.consoleShowNameById(longId) + "имеет на данный момент стадию: " + console.consoleShowStageById(longId)
-                        + "Вы уверены, что хотите изменить? \n да/нет");
+                        + " Вы уверены, что хотите изменить? \n да/нет");
 
 
                 while(true) {
@@ -132,6 +132,7 @@ public class BaseMethod {
 
                         console.consoleSetStage(longId, newStage);
                         System.out.println("Стадия выполнения задачи успешно обновлена!");
+                        break;
                     }
 
                 }
@@ -143,7 +144,7 @@ public class BaseMethod {
                         +
                         console.consoleShowDueDateById(longId)
                         +
-                        "Вы уверены, что хотите изменить? \n да/нет");
+                        " Вы уверены, что хотите изменить? \n да/нет");
 
 
                 while(true) {
@@ -167,6 +168,7 @@ public class BaseMethod {
                         console.consoleSetDueDate(longId, newDueDate);
                         System.out.println("Срок выполнения задачи успешно обновлен!");
                         break;
+
 
                     }
 
