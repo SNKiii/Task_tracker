@@ -30,7 +30,7 @@ public class DeleteFormat extends BaseFormat{
 
     }
 
-    public static String taskFormatToOne(Task task) throws FileNotFoundException {
+    public static String taskFormatToOne(Task task, JsonManager jsonManager) throws FileNotFoundException {
 
         StringBuilder stringNameDeleteTask = new StringBuilder();
 
@@ -38,7 +38,7 @@ public class DeleteFormat extends BaseFormat{
         stringNameDeleteTask.append(task.getName());
         stringNameDeleteTask.append("\n");
 
-        if (JsonManager.checkingAvailability(task.getId())) {
+        if (jsonManager.checkingAvailability(task.getId())) {
 
             stringNameDeleteTask.append("The task data is still saved in the storage.");
             stringNameDeleteTask.append("/n");

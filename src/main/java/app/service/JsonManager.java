@@ -2,6 +2,7 @@ package app.service;
 
 import app.eception.IncorrectDataEntry;
 import app.model.Task;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -9,26 +10,37 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 public class JsonManager {
 
-    private final static Path JSON_FILE_PATH = Path.of("src/main/resources/json/Tasks.json");
-    
-    private final ObjectMapper mapper;
+    private final Path JSON_FILE_PATH;
 
-    public JsonManager(){
+    public JsonManager() {
 
-        this.mapper = new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT);
+        this(Path.of("src/main/resources/json/Tasks.json"));
 
     }
 
-    public static void startWriterTasks (Console console) {
+    public JsonManager(Path jsonFilePath) {
+
+        this.JSON_FILE_PATH = jsonFilePath;
+
+    }
+
+    public  void startWriterTasks (Console console) {
 
         try {
 
             File file = JSON_FILE_PATH.toFile();
             var tasks = SaveJsonFile.readJsonFiles(file);
+
+            long id = tasks.stream()
+                    .mapToLong(Task::getId)
+                    .max()
+                    .orElse(0);
+
+            Task.setIdGenerator(id);
 
             for (var task : tasks) {
 
@@ -51,24 +63,16 @@ public class JsonManager {
 
     }
 
-    public static  void endWriterTasks (Console console) {
-
+    public  void endWriterTasks(Console console) {
         try {
-
-            File file = JSON_FILE_PATH.toFile();
-            var tasks = console.consoleGetAllTasks();
-            SaveJsonFile.appendJson(file, tasks);
-
-
+            List<Task> tasks = console.consoleGetAllTasks();
+            SaveJsonFile.saveAllTasks(tasks, JSON_FILE_PATH);
         } catch (IOException e) {
-
-            throw new RuntimeException("An unexpected error occurred while writing tasks to file.");
-
+            throw new RuntimeException("Failed to save tasks", e);
         }
-
     }
 
-    public static void turningEmptyFile() {
+    public  void turningEmptyFile() {
 
         try {
 
@@ -82,15 +86,15 @@ public class JsonManager {
 
     }
 
-//    public  static void deleteLineJson(Console console) {
-//
-//        //удаление строки с задачей определенного id
-//
-//
-//    }
+    public void deleteLineJson(Console console, Long id) throws IOException {
+
+        String operationOutput = SaveJsonFile.deleteLineById(JSON_FILE_PATH, id);
 
 
-    public static boolean checkingAvailability(Long id) throws FileNotFoundException {
+    }
+
+
+    public boolean checkingAvailability(Long id) throws FileNotFoundException {
 
         if(id == null) {
 
@@ -104,9 +108,4 @@ public class JsonManager {
 
     }
 
-//    public static String updateTask(Console console) {
-//
-//
-//
-//    }
 }

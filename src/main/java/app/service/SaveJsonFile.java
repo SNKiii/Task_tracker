@@ -4,17 +4,18 @@ package app.service;
 import app.model.Task;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 public class SaveJsonFile {
 
@@ -25,69 +26,31 @@ public class SaveJsonFile {
 
     private SaveJsonFile(){}
 
-    public static void appendJson (File file, List<Task> tasks) throws IOException {
+    public static void saveAllTasks(List<Task> tasks, Path filePath) throws IOException {
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .enable(SerializationFeature.INDENT_OUTPUT);
 
-        try {
-            List<String> lines = Files.readAllLines(file.toPath());
-            List<String> updaterLine = new ArrayList<>();
-
-            Map<Long, Task> taskMap = tasks.stream()
-                    .collect(Collectors.toMap(Task::getId, Function.identity()));
-            boolean check = false;
-
-            for (String line : lines) {
-
-                if (line.trim().isEmpty()) {
-
-                    updaterLine.add(line);
-                    continue;
-
-                }
-
-
-                JsonNode node = mapper.readTree(line);
-
-                if (node.has("id") ) {
-                    long id = node.get("id").asLong();
-                    Task newTask = taskMap.get(id);
-
-                    if (newTask != null) {
-
-                        JsonNode taskNode = mapper.valueToTree(newTask);
-                        ObjectNode mergedNode = (ObjectNode) node;
-
-                        taskNode.fields().forEachRemaining(entry -> {
-                            mergedNode.set(entry.getKey(), entry.getValue());
-                        });
-
-                        line = mapper.writeValueAsString(mergedNode);
-                        check = true;
-
-                        taskMap.remove(id);
-
-                    }
-                }
-
-                updaterLine.add(line);
-
-            }
-
-            for (Task newTask : taskMap.values()) {
-                String jsonLine = mapper.writeValueAsString(newTask);
-                updaterLine.add(jsonLine);
-                check = true;
-            }
-
-            if (check) {
-
-                Files.write(file.toPath(), updaterLine, StandardCharsets.UTF_8);
-
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to update task", e);
+        File file = filePath.toFile();
+        File backup = new File(file.getParent(), "Tasks_backup.json");
+        if (file.exists()) {
+            Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
 
+        try {
+            try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+                for (Task task : tasks) {
+                    writer.write(mapper.writeValueAsString(task));
+                    writer.write("\n");
+                }
+            }
+            Files.deleteIfExists(backup.toPath());
+        } catch (IOException e) {
+            if (backup.exists()) {
+                Files.copy(backup.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            throw e;
+        }
     }
 
     public static List<Task> readJsonFiles(File file) throws IOException {
@@ -122,15 +85,82 @@ public class SaveJsonFile {
 
     }
 
-//    public static void deleteLineById(File file) {
-//
-//        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//
-//
-//
-//        }
-//
-//    }
+    public static String deleteLineById(Path filePath, Long id) throws IOException {
+
+       File file = filePath.toFile();
+
+        if (!file.exists()) {
+
+            throw new FileNotFoundException("File not found: " + filePath);
+
+        }
+
+        File backup = new File(file.getParent(), "Tasks_backup_before_delete.json");
+        Files.copy(filePath, backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        try {
+
+            List<String> list = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+            List<String> updateList = new ArrayList<>();
+            boolean check = false;
+
+            for (String line : list) {
+
+                if (line.trim().isEmpty()) {
+
+                    continue;
+
+                }
+                try {
+                    JsonNode node = mapper.readTree(line);
+
+                    if (node.has("id") && node.get("id").asLong() == id) {
+
+                        check = true;
+                        continue;
+
+                    }
+
+                } catch (IOException e) {
+
+                    return "Error read line";
+
+                }
+
+                updateList.add(line);
+
+            }
+
+            if (check) {
+
+                Files.write(filePath, updateList, StandardCharsets.UTF_8);
+                Files.deleteIfExists(backup.toPath());
+                return "Successful removal";
+
+            } else {
+
+                return "Task with ID \" + id + \" not found in storage.";
+
+            }
+
+        } catch (IOException e) {
+
+
+            if(backup.exists()) {
+
+                Files.copy(backup.toPath(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                return "An error occurred while modifying the file.";
+
+            }
+
+            throw e;
+
+        }
+
+
+
+
+    }
 
 
     public static boolean searchTaskById(File file, String id) throws FileNotFoundException {

@@ -32,4 +32,12 @@ public class Task {
         this.id = idGenerator.getAndIncrement();
     }
 
+    public static void setIdGenerator(long lastId) {
+
+        idGenerator.set(lastId + 1);
+
+    }
+
+
+
 }

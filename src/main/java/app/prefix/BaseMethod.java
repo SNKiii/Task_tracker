@@ -19,15 +19,15 @@ import java.util.Scanner;
 public class BaseMethod {
 
     private final static int COUNT_CUCLES = 4;
-    private static Map<String, String> taskArgument = new HashMap<>();
+
 
     private BaseMethod() {}
 
     public static Map<String, String> whileAddTask() {
 
+        Map<String, String> taskArgument = new HashMap<>();
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
         for (int i = 0; i < COUNT_CUCLES; i++){
 
@@ -104,7 +104,6 @@ public class BaseMethod {
     public static String updateTask(Console console, String prefix, String id) {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
         Long longId;
          try{
 
@@ -190,7 +189,6 @@ public class BaseMethod {
     public static String deleteAllTasks (Console console, String prefix) {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
         switch (prefix) {
 
@@ -241,7 +239,7 @@ public class BaseMethod {
                     } else if (input.equalsIgnoreCase("да")){
 
                         String outPutLine = console.consoleDeleteAll();
-                        JsonManager.turningEmptyFile();
+                        console.getJsonManager().turningEmptyFile();
                         System.out.println("Все прошло успешно! Хранилище приложения полностью пустое");
                         return outPutLine;
 
@@ -260,10 +258,9 @@ public class BaseMethod {
     }
 
 
-    public static String deleteTaskFromId(Console console, String prefix, Long id) {
+    public static String deleteTaskFromId(Console console, String prefix, Long id) throws FileNotFoundException {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
 
 
@@ -319,8 +316,8 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-                        String outPutLine = console.consoleDeleteAll();
-                        JsonManager.startWriterTasks(console);
+                        String outPutLine = console.consoleDelete(id);
+                        console.getJsonManager().startWriterTasks(console);
                         return outPutLine;
 
                     }

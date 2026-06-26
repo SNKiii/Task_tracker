@@ -36,7 +36,7 @@ public class ConsoleWin {
 
                 System.out.println(ConstantHandler.getBaseCommand());
 
-                JsonManager.startWriterTasks(console);
+                console.getJsonManager().startWriterTasks(console);
 
                 do {
 
@@ -60,7 +60,7 @@ public class ConsoleWin {
                     }
                 } while(!inputCommand.trim().equals("/exit"));
 
-                JsonManager.endWriterTasks(console);
+                console.getJsonManager().endWriterTasks(console);
                 System.exit(0);
 
             }

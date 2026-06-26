@@ -8,6 +8,7 @@ import app.format.DeleteFormat;
 import app.model.Task;
 import app.param.Param;
 import app.repository.TaskRepository;
+import lombok.Getter;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -17,6 +18,8 @@ import java.util.List;
 
 public class Console {
 
+    @Getter
+    private final JsonManager jsonManager = new JsonManager();
 
     private final TaskRepository taskRepository = new TaskRepository();
 
@@ -294,7 +297,7 @@ public class Console {
         var task = taskRepository.getTaskById(id);
         try {
             taskRepository.delete(id);
-            return DeleteFormat.taskFormatToOne(task)
+            return DeleteFormat.taskFormatToOne(task, jsonManager)
                     +
                     "\n"
                     +
