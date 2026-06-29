@@ -24,6 +24,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.+")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.+")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.+")
+
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("org.fusesource.jansi:jansi:2.4.0")
 }
 
 tasks.test {

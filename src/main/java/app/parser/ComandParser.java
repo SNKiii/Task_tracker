@@ -9,6 +9,7 @@ import app.prefix.BaseMethod;
 import app.service.Console;
 import app.service.JsonManager;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 
 import java.util.regex.Matcher;
@@ -205,6 +206,10 @@ public class ComandParser {
                     } catch (NumberFormatException e) {
 
                         throw new IncorrectDataEntry("Invalid ID format. Use only numbers [0-9]");
+
+                    } catch (FileNotFoundException e) {
+
+                        throw new RuntimeException(e);
 
                     }
 

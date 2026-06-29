@@ -158,6 +158,7 @@ public class Console {
 
     public String consoleShowById(Long id) {
         try {
+
             List<Task> tasks = new ArrayList<>();
             tasks.add(taskRepository.getTaskById(id));
             return BaseFormat.formatShowTask(tasks);
