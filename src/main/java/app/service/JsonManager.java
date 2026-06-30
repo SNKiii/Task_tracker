@@ -1,10 +1,7 @@
 package app.service;
 
-import app.eception.IncorrectDataEntry;
+import app.exception.IncorrectDataEntry;
 import app.model.Task;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.File;
 import java.io.FileNotFoundException;

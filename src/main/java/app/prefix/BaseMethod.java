@@ -1,15 +1,12 @@
 package app.prefix;
 
 import app.constants.DataDefaultNumber;
-import app.eception.CommandParsingError;
-import app.eception.IncorrectDataEntry;
-import app.format.DeleteFormat;
+import app.exception.CommandParsingError;
+import app.exception.IncorrectDataEntry;
 import app.format.UpdateFormat;
 import app.service.Console;
-import app.service.JsonManager;
 
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;

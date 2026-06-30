@@ -1,0 +1,58 @@
+package app.exception;
+
+import lombok.Getter;
+
+@Getter
+public class FundamentError extends RuntimeException {
+
+    private final ListErrors listErrors;
+    private final String message;
+    private final Object[] args;
+
+    public FundamentError(ListErrors error) {
+
+        super(error.getBaseMessage());
+        this.listErrors = error;
+        this.message =  error.getBaseMessage();
+        this.args = new Object[0];
+
+    }
+
+    public FundamentError(ListErrors error, String massage, Object... args) {
+
+        super(error.format(args));
+        this.listErrors = error;
+        this.message = massage;
+        this.args = args;
+
+    }
+
+    public FundamentError(ListErrors error, Object... args) {
+
+        super(error.format(args));
+        this.listErrors = error;
+        this.message = error.getBaseMessage();
+        this.args = args;
+
+    }
+
+    public FundamentError(ListErrors error, String message, Throwable cause, Object... args) {
+
+        super(error.format(args), cause);
+
+        this.listErrors = error;
+        this.message = message;
+        this.args = args;
+
+    }
+
+    public FundamentError(ListErrors error, String message) {
+
+        super(error.format(message));
+        this.listErrors = error;
+        this.message = message;
+        this.args = new Object[0];
+
+    }
+
+}

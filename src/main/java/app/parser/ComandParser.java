@@ -1,13 +1,10 @@
 package app.parser;
 
 import app.constants.ConstantHandler;
-import app.constants.DataDefaultNumber;
-import app.eception.CommandParsingError;
-import app.eception.IncorrectDataEntry;
+import app.exception.IncorrectDataEntry;
 import app.param.StringParam;
 import app.prefix.BaseMethod;
 import app.service.Console;
-import app.service.JsonManager;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;

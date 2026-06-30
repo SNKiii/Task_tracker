@@ -109,8 +109,6 @@
         </rollingPolicy>
     </appender>
 
-
-
     <logger name="app" level="DEBUG" />
 
     <logger name="USER_ACTION" level="INFO" additivity="false">

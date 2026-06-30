@@ -1,7 +1,6 @@
 package app.util;
 
 
-import app.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

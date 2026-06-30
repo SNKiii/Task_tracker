@@ -1,7 +1,6 @@
 package app.repository;
 
-import app.eception.IncorrectDataEntry;
-import app.eception.TaskNotFound;
+import app.exception.TaskNotFound;
 import app.model.Task;
 
 import java.time.LocalDate;

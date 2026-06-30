@@ -1,8 +1,8 @@
 package app.service;
 
 import app.constants.DataDefaultNumber;
-import app.eception.IncorrectDataEntry;
-import app.eception.TaskNotFound;
+import app.exception.IncorrectDataEntry;
+import app.exception.TaskNotFound;
 import app.format.BaseFormat;
 import app.format.DeleteFormat;
 import app.model.Task;
