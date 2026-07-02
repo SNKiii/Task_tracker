@@ -1,8 +1,7 @@
 package app.prefix;
 
 import app.constants.DataDefaultNumber;
-import app.exception.CommandParsingError;
-import app.exception.IncorrectDataEntry;
+import app.exception.*;
 import app.format.UpdateFormat;
 import app.service.Console;
 
@@ -37,7 +36,7 @@ public class BaseMethod {
 
                     if (field == null || field.isEmpty()) {
 
-                        throw new IncorrectDataEntry("Некорректный ввод названия задачи");
+                        throw new TaskNotCreated(new IncorrectDataEntry("Invalid task name input"));
 
                     }
 
@@ -52,7 +51,7 @@ public class BaseMethod {
 
                     if (field == null || field.isEmpty()) {
 
-                        throw new IncorrectDataEntry("Некорректный ввод основного тела задачи");
+                        throw new TaskNotCreated(new IncorrectDataEntry("Invalid input for the main body of the task"));
 
                     }
 
@@ -67,7 +66,7 @@ public class BaseMethod {
 
                     if (field == null || !field.matches("([0-9]|10)")) {
 
-                        throw new IncorrectDataEntry("Некорректный ввод уровня важности задачи");
+                        throw new TaskNotCreated(new IncorrectDataEntry("Invalid task importance level input"));
 
                     }
 
@@ -89,15 +88,12 @@ public class BaseMethod {
                     taskArgument.put("dueDate", field);
 
                 }
-
             }
-
-
-
         }
 
         return taskArgument;
     }
+
     public static String updateTask(Console console, String prefix, String id) {
 
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
@@ -157,7 +153,7 @@ public class BaseMethod {
 
                         if (!newDueDate.matches("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$")) {
 
-                            throw new IncorrectDataEntry("Неверный формат даты");
+                            throw new TaskNotUpdated("Completion date", new IncorrectDataEntry("Неверный формат даты"));
 
                         }
 
@@ -175,7 +171,7 @@ public class BaseMethod {
         }
          } catch (NumberFormatException e) {
 
-            throw new CommandParsingError("id указан неверно. Имеет не числовой тип");
+            throw new NumberError("id указан неверно. Имеет не числовой тип", e);
 
          }
 
@@ -280,11 +276,14 @@ public class BaseMethod {
 
                     } else if (input.equalsIgnoreCase("да")){
 
-
                         try {
+
                              return  console.consoleDelete(id);
+
                         } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
+
+                            throw new TaskNotDeleted(e);
+
                         }
                     }
 

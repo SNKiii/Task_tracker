@@ -1,6 +1,9 @@
 package app.format;
 
 
+import app.exception.FormatFailed;
+import app.exception.IncorrectDataEntry;
+import app.exception.TaskNotDeleted;
 import app.model.Task;
 import app.service.JsonManager;
 
@@ -30,7 +33,7 @@ public class DeleteFormat extends BaseFormat{
 
     }
 
-    public static String taskFormatToOne(Task task, JsonManager jsonManager) throws FileNotFoundException {
+    public static String taskFormatToOne(Task task, JsonManager jsonManager)  {
 
         StringBuilder stringNameDeleteTask = new StringBuilder();
 
@@ -38,17 +41,23 @@ public class DeleteFormat extends BaseFormat{
         stringNameDeleteTask.append(task.getName());
         stringNameDeleteTask.append("\n");
 
-        if (jsonManager.checkingAvailability(task.getId())) {
+        try {
+            if (jsonManager.checkingAvailability(task.getId())) {
 
-            stringNameDeleteTask.append("The task data is still saved in the storage.");
-            stringNameDeleteTask.append("/n");
-            stringNameDeleteTask.append("Task id with repository ->");
-            stringNameDeleteTask.append(task.getId());
-            stringNameDeleteTask.append("\n");
+                stringNameDeleteTask.append("The task data is still saved in the storage.");
+                stringNameDeleteTask.append("/n");
+                stringNameDeleteTask.append("Task id with repository ->");
+                stringNameDeleteTask.append(task.getId());
+                stringNameDeleteTask.append("\n");
 
-        } else {
+            } else {
 
-            stringNameDeleteTask.append("These tasks are not stored in external storage.");
+                stringNameDeleteTask.append("These tasks are not stored in external storage.");
+
+            }
+        } catch (FileNotFoundException e) {
+
+            throw new FormatFailed(e);
 
         }
 

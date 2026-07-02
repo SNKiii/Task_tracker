@@ -10,4 +10,10 @@ public class TaskNotUpdated extends FundamentError{
 
     }
 
+    public TaskNotUpdated(Throwable cause) {
+
+        super(ListErrors.TASK_NOT_UPDATED, String.format("Error while attempting to update -> '%s'", cause.getMessage()), cause);
+
+    }
+
 }

@@ -1,8 +1,7 @@
 package app.service;
 
 import app.constants.DataDefaultNumber;
-import app.exception.IncorrectDataEntry;
-import app.exception.TaskNotFound;
+import app.exception.*;
 import app.format.BaseFormat;
 import app.format.DeleteFormat;
 import app.model.Task;
@@ -56,7 +55,7 @@ public class Console {
             return BaseFormat.formatCreateTask(task);
         } catch (DateTimeParseException e) {
 
-            throw new IncorrectDataEntry("The date is in the wrong format" + e.getMessage());
+            throw new DateError("The date is in the wrong format",  e);
 
         }
 
@@ -80,7 +79,7 @@ public class Console {
                 id == null
         ) {
 
-            throw new IncorrectDataEntry("Invalid data in file");
+            throw new TaskNotCreated(new IncorrectDataEntry("Invalid data in file"));
 
         }
 
@@ -107,7 +106,7 @@ public class Console {
             taskRepository.create(task);
         } catch (DateTimeParseException e) {
 
-            throw new IncorrectDataEntry("The date from the file is in the wrong format.");
+            throw new TaskNotCreated(new IncorrectDataEntry("The date from the file is in the wrong format."));
 
         }
 
@@ -141,19 +140,11 @@ public class Console {
 
         }
 
-        try {
+        var tasks = taskRepository.getTasks(sizeTasks);
 
-            var tasks = taskRepository.getTasks(sizeTasks);
-
-            return BaseFormat.formatShowTask(tasks);
+        return BaseFormat.formatShowTask(tasks);
 
 
-
-        } catch (TaskNotFound e) {
-
-            return "No tasks found";
-
-        }
     }
 
     public String consoleShowById(Long id) {
@@ -165,7 +156,7 @@ public class Console {
 
         } catch (TaskNotFound e) {
 
-            return "Error | | | " + e.getMessage();
+            throw new TaskNotFound(id);
 
         }
 
@@ -173,17 +164,9 @@ public class Console {
 
     public  String consoleShowByName(String name) {
 
-        try {
-
-            List<Task> tasks = new ArrayList<>();
-            tasks.add(taskRepository.getTaskByName(name));
-            return BaseFormat.formatShowTask(tasks);
-
-        } catch (TaskNotFound e) {
-
-            return "Error | | | " + e.getMessage();
-
-        }
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(taskRepository.getTaskByName(name));
+        return BaseFormat.formatShowTask(tasks);
 
 
     }
@@ -229,7 +212,7 @@ public class Console {
 
         if (id == null) {
 
-            throw new IncorrectDataEntry("Пустой ввод id");
+            throw new IncorrectDataEntry("Empty id input");
 
         }
 
@@ -243,7 +226,7 @@ public class Console {
 
         if (id == null) {
 
-            throw new IncorrectDataEntry("Пустой ввод id");
+            throw new IncorrectDataEntry("Empty id input");
 
         }
 
@@ -257,19 +240,14 @@ public class Console {
 
         if (id == null || id <= 0 || stage == null) {
 
-            throw new IncorrectDataEntry();
+            throw new TaskNotUpdated("stage", new IncorrectDataEntry("Invalid data. Stage - '" + stage
+                    +
+                    "', identifier - '" + id + "'"));
 
         }
-        try {
 
-            var task = taskRepository.getTaskById(id);
-            return taskRepository.completedMark(task, stage).toString();
-
-        } catch (TaskNotFound e) {
-
-            return e.getMessage();
-
-        }
+        var task = taskRepository.getTaskById(id);
+        return taskRepository.completedMark(task, stage).toString();
 
     }
 
@@ -277,26 +255,25 @@ public class Console {
 
         if (id == null || id <= 0 || dueDate == null) {
 
-            throw new IncorrectDataEntry();
+            throw new TaskNotUpdated("Completion date",
+                    new IncorrectDataEntry("Invalid data. "
+                    +
+                    "Completion date - '"
+                    +
+                    dueDate
+                    +
+                    "', identifier - '" + id + "'"));
 
         }
-        try {
 
-            var task = taskRepository.getTaskById(id);
-            return taskRepository.setDateComplate(task, LocalDate.parse(dueDate)).toString();
-
-        } catch (TaskNotFound e) {
-
-            return e.getMessage();
-
-        }
+        var task = taskRepository.getTaskById(id);
+        return taskRepository.setDateComplate(task, LocalDate.parse(dueDate)).toString();
 
     }
 
     public String consoleDelete(Long id) throws FileNotFoundException {
 
         var task = taskRepository.getTaskById(id);
-        try {
             taskRepository.delete(id);
             return DeleteFormat.taskFormatToOne(task, jsonManager)
                     +
@@ -305,9 +282,7 @@ public class Console {
                     "The task has been successfully deleted!\n" +
                     "+\n" +
                     "\"Uncompleted tasks remain:" + taskRepository.showSizeTask();
-        } catch (TaskNotFound e) {
-            return  "The task cannot be deleted due to the following reason:: " + e.getMessage();
-        }
+
     }
 
     public String consoleDeleteAll() {

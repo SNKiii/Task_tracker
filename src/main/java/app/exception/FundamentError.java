@@ -2,6 +2,8 @@ package app.exception;
 
 import lombok.Getter;
 
+import java.nio.file.Files;
+
 @Getter
 public class FundamentError extends RuntimeException {
 
@@ -24,6 +26,15 @@ public class FundamentError extends RuntimeException {
         this.listErrors = error;
         this.message = massage;
         this.args = args;
+
+    }
+
+    public FundamentError(ListErrors error, String message, Throwable cause) {
+
+        super(error.format());
+        this.listErrors = error;
+        this.args = new Object[0];
+        this.message = message;
 
     }
 

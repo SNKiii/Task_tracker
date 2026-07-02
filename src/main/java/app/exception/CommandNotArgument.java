@@ -9,4 +9,10 @@ public class CommandNotArgument extends CommandParsingError{
 
     }
 
+    public CommandNotArgument(int size) {
+
+        super(ListErrors.COMMAND_WITHOUT_REQUIRED_ARGUMENTS, size);
+
+    }
+
 }

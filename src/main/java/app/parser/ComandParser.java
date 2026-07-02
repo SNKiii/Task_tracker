@@ -1,7 +1,7 @@
 package app.parser;
 
 import app.constants.ConstantHandler;
-import app.exception.IncorrectDataEntry;
+import app.exception.*;
 import app.param.StringParam;
 import app.prefix.BaseMethod;
 import app.service.Console;
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class ComandParser {
 
 
-    public static String parser(String comand, Console console) throws NoSuchMethodException {
+    public static String parser(String comand, Console console)  {
 
         String outPutLine = "";
 
@@ -24,7 +24,7 @@ public class ComandParser {
 
         if (!matcher.find()) {
 
-            return "Command error. Please check and try again";
+            throw new CommandNotFound("Invalid command");
 
         }
 
@@ -39,7 +39,17 @@ public class ComandParser {
                 String importanceLevel = "";
                 String dueDate = "";
 
-                Method method = Console.class.getMethod("consoleAdd", String.class, String.class, String.class, String.class);
+                Method method = null;
+
+                try {
+
+                    method = Console.class.getMethod("consoleAdd", String.class, String.class, String.class, String.class);
+
+                } catch (NoSuchMethodException e) {
+
+                    throw new SystemError(e);
+
+                }
 
                 var nameMethods = StringParam.getParams(method, 4);
                 var inputUser = BaseMethod.whileAddTask();
@@ -88,7 +98,7 @@ public class ComandParser {
 
                         if (string.length != 3 || string[2] == null) {
 
-                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                            throw new CommandNotArgument(string.length);
 
                         }
 
@@ -103,7 +113,7 @@ public class ComandParser {
 
                         } catch (NumberFormatException e) {
 
-                            throw new IncorrectDataEntry("Invalid ID format. Use only numbers [0-9]");
+                            throw new NumberError("Invalid number format", e);
 
                         }
 
@@ -113,7 +123,7 @@ public class ComandParser {
 
                         if (string.length < 3 || string[2] == null) {
 
-                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                            throw new CommandNotArgument(string.length);
 
                         }
 
@@ -145,7 +155,7 @@ public class ComandParser {
 
                         if (string.length != 3 && string[2] != null) {
 
-                            throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                            throw new CommandNotArgument(string.length);
 
                         }
 
@@ -166,7 +176,7 @@ public class ComandParser {
                         ||
                         string[2] == null || string[2].isEmpty()) {
 
-                    throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                    throw new TaskNotUpdated(new IncorrectDataEntry("Invalid command input. Insufficient data to proceed"));
 
                 }
 
@@ -180,7 +190,7 @@ public class ComandParser {
 
                     if (string[1] == null || string[1].isEmpty()) {
 
-                        throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                        throw new TaskNotDeleted(new IncorrectDataEntry("Invalid command input. Insufficient data to proceed"));
 
                     }
 
@@ -192,7 +202,7 @@ public class ComandParser {
                             ||
                             string[3] == null || string[3].isEmpty()) {
 
-                        throw new IncorrectDataEntry("Invalid command input. Insufficient data to proceed");
+                        throw new TaskNotDeleted(new IncorrectDataEntry("Invalid command input. Insufficient data to proceed"));
 
                     }
 
@@ -202,7 +212,7 @@ public class ComandParser {
 
                     } catch (NumberFormatException e) {
 
-                        throw new IncorrectDataEntry("Invalid ID format. Use only numbers [0-9]");
+                        throw new TaskNotDeleted(new NumberError("Invalid ID format. Use only numbers [0-9]"));
 
                     } catch (FileNotFoundException e) {
 

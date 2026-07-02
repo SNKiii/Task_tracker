@@ -2,9 +2,9 @@ package app.exception;
 
 public class IncorrectDataEntry  extends  FundamentError{
 
-   public IncorrectDataEntry(Throwable cause) {
+   public IncorrectDataEntry(String message) {
 
-       super(ListErrors.USER_INPUT_ERROR, cause);
+       super(ListErrors.USER_INPUT_ERROR, message);
 
    }
 

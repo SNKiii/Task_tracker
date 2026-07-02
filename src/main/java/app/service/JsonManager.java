@@ -1,6 +1,7 @@
 package app.service;
 
 import app.exception.IncorrectDataEntry;
+import app.exception.JsonError;
 import app.model.Task;
 
 import java.io.File;
@@ -48,13 +49,13 @@ public class JsonManager {
 
             if(tasks.isEmpty()) {
 
-                System.out.println("The launch was successful, but no tasks were found yet.");
+                throw new JsonError("The launch was successful, but no tasks were found yet.");
 
             }
 
         } catch (IOException e) {
 
-            System.out.println(e.getMessage());
+            throw new JsonError(JSON_FILE_PATH, e);
 
         }
 

@@ -28,6 +28,8 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("org.fusesource.jansi:jansi:2.4.0")
+
+    implementation("org.apache.commons:commons-lang3:3.20.0")
 }
 
 tasks.test {

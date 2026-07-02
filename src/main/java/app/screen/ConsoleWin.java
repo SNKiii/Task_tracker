@@ -2,11 +2,14 @@ package app.screen;
 
 import app.constants.ConstantHandler;
 import app.constants.DataPathTextFile;
+import app.exception.FundamentError;
+import app.exception.GlobalExceptionHandler;
 import app.parser.ComandParser;
 import app.service.Console;
 import app.util.LogUtil;
 import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
@@ -15,6 +18,7 @@ public class ConsoleWin {
 
     private static final Console console = new Console();
     private static final Logger log = LogUtil.getLogger(ConsoleWin.class);
+    private static final GlobalExceptionHandler globalExc = GlobalExceptionHandler.getInstance();
 
     public static void startWindow() {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
@@ -38,8 +42,16 @@ public class ConsoleWin {
                 String inputCommand = "";
 
                 System.out.println(ConstantHandler.getBaseCommand());
+                try {
 
-                console.getJsonManager().startWriterTasks(console);
+                    console.getJsonManager().startWriterTasks(console);
+
+                } catch (RuntimeException e) {
+
+                    System.out.println(globalExc.handleException(e));
+
+                }
+
 
                 do {
 
@@ -50,18 +62,22 @@ public class ConsoleWin {
                         System.out.println("Ошибка. Пустой ввод команды");
                         log.error("ERROR");
 
+                    } else {
+
+                        try {
+
+                            String returnCommand = ComandParser.parser(inputCommand, console);
+                            System.out.println(returnCommand);
+
+                        } catch (FundamentError e) {
+
+                            System.out.println(globalExc.handleException(e));
+
+                        }
+
                     }
 
-                    try {
 
-                        String returnCommand = ComandParser.parser(inputCommand, console);
-                        System.out.println(returnCommand);
-
-                    } catch (NoSuchMethodException e) {
-
-                        System.out.println("Ошибка. " + e.getMessage());
-
-                    }
                 } while(!inputCommand.trim().equals("/exit"));
 
                 console.getJsonManager().endWriterTasks(console);

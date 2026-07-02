@@ -57,7 +57,7 @@ public class TaskRepository {
         return tasks.stream()
                 .filter(v -> v.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new TaskNotFound("Задачи не было найдено по id: " + id));
+                .orElseThrow(() -> new TaskNotFound(id));
 
     }
 
@@ -66,14 +66,14 @@ public class TaskRepository {
         return tasks.stream()
                 .filter(v -> v.getName().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new TaskNotFound("Задачи не было найдено по name: " + name));
+                .orElseThrow(() -> new TaskNotFound(name));
     }
 
     public void delete(Long id) {
         tasks.remove(tasks.stream()
                 .filter(v -> v.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new TaskNotFound("Задачи не было найдено. id: " + id)));
+                .orElseThrow(() -> new TaskNotFound(id)));
     }
 
     public void deleteAll() {

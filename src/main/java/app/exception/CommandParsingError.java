@@ -14,4 +14,10 @@ public class CommandParsingError extends FundamentError{
 
     }
 
+    public CommandParsingError(ListErrors error, int size) {
+
+        super(error, size);
+
+    }
+
 }

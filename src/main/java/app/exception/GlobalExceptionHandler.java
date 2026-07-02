@@ -128,16 +128,21 @@ public class GlobalExceptionHandler {
             if (fe.getArgs().length != 0) {
 
                 sb.append("Причина JSON ошибки: ").append(fe.getArgs()[0].toString()).append("\n");
+                if (fe.getListErrors().getCode() == 402 || fe.getListErrors().getCode() == 401) {
 
-            }
+                    sb.append(" 🔥 Внимание! Из-за ошибки все последующие изменения в программе не будут сохранены! 🔥 ").append("\n");
+                    sb.append("  🔄  Просьба проверить целостность файлов и перезапустить программу");
 
-        }
+                } else {
 
-        if (fe instanceof CommandParsingError) {
+                    sb.append(" ℹ️  Из-за настроек приложения задачи не были сохранены ").append("\n");
 
-            if (fe.getArgs().length != 0) {
+                }
 
 
+            } else {
+
+                sb.append("Задач во внутренней памяти не обнаружено.");
 
             }
 
@@ -196,6 +201,20 @@ public class GlobalExceptionHandler {
 
                 return "Прочитайте документацию для лучшего понимания требований к командам (/com)";
             }
+
+            case FormatFailed formatFailed -> {
+
+                return "Обратитесь к разработчику или проверьте хранилище на баги";
+
+            }
+
+            case SystemError systemError -> {
+
+                return "Обратитесь к разработчику";
+
+            }
+
+
             default -> {
 
                 return "  💡 Попробуйте перезапустить приложение или обратитесь к разработчику\n";
